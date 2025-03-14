@@ -12,9 +12,9 @@ private:
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
     sf::Event ev;
-
     std::vector<sf::CircleShape> renderObjects;
-
+    std::vector<sf::VertexArray> orbitTrails;
+    std::vector<Planet> objects;
     sf::View view;
 
     // game logic
@@ -25,18 +25,18 @@ private:
     bool lockKeyPressed;
     bool leftKeyPressed;
     bool rightKeyPressed;
-
     // functions
     void initVariables();
     void initRenderShapes();
     void initWindow();
     void initView();
 public:
+
     Game();
     ~Game();
-    std::vector<Planet> objects;
     Simulator simulator;
     const bool running() const;
+    bool orbitTrail = false;
 
     // functions
     void addPlanet(Planet planet);
@@ -46,7 +46,7 @@ public:
     void updateCamera();
     void updateControls();
     void update();
-
+    
     void renderPlanets();
     void render();
 
