@@ -7,7 +7,7 @@ include_directories(${orbitMe_DIR}/include)
 link_directories("${orbitMe_DIR}/lib")
 
 set(SOURCES
-    src/main.cpp
+    main.cpp #the name of your project main file i put src 
     ${orbitMe_DIR}/src/Planet.cpp
     ${orbitMe_DIR}/src/Game.cpp
     ${orbitMe_DIR}/src/Simulator.cpp
