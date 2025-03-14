@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.21)
+project(orbitSimulatorCheck)
+
+set(orbitMe_DIR "path to orbitMe")
+
+include_directories(${orbitMe_DIR}/include)
+link_directories("${orbitMe_DIR}/lib")
+
+set(SOURCES
+    src/main.cpp
+    ${orbitMe_DIR}/src/Planet.cpp
+    ${orbitMe_DIR}/src/Game.cpp
+    ${orbitMe_DIR}/src/Simulator.cpp
+)
+
+add_executable(orbitSimulatorCheck ${SOURCES})
+
+target_link_libraries(orbitSimulatorCheck
+    sfml-graphics
+    sfml-system
+    sfml-window
+)
