@@ -36,7 +36,7 @@ public:
     ~Game();
     Simulator simulator;
     const bool running() const;
-    bool orbitTrail = false;
+    bool orbitTrail;
 
     // functions
     void addPlanet(Planet planet);
