@@ -1,14 +1,17 @@
-#pragma once // pragma once instead of ifdef 
+#pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "Planet.h"
 #include "Simulator.h"
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 class Game
 {
 private:
-    //vars
+    // Variables
+    std::string orbitMePath; // Path to the lab
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
     sf::Event ev;
@@ -16,8 +19,10 @@ private:
     std::vector<sf::VertexArray> orbitTrails;
     std::vector<Planet> objects;
     sf::View view;
-
-    // game logic
+    // ui stuff
+    void simulationSettingsUi();
+    void addPlanetUi();
+    // Game logic
     enum CameraMode { Free, Lock };
     CameraMode cameraMode;
     size_t currentPlanetIndex;
@@ -25,36 +30,35 @@ private:
     bool lockKeyPressed;
     bool leftKeyPressed;
     bool rightKeyPressed;
-    // functions
+
+    // Functions
     void initVariables();
     void initRenderShapes();
     void initWindow();
+    void initUi();
     void initView();
-public:
 
+public:
     Game();
     ~Game();
     Simulator simulator;
     const bool running() const;
     bool orbitTrail;
 
-    // functions
+    // Functions
     void addPlanet(Planet planet);
     void pollEvents();
-
+    void updateUi();
     void updatePlanet();
     void updateCamera();
     void updateControls();
     void update();
-    
+    void renderUi();
     void renderPlanets();
     void render();
 
-
-
-    // setters
-    void setSpeed(float speed); // the speed of the camera
-
-    // getters
+    // Setters and getters
+    void setSpeed(float speed);
+    void setOrbitMePath(std::string pathToOrbitMe);
     float getSpeed() const;
 };

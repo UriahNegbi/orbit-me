@@ -18,5 +18,5 @@ void Planet::setVelocity(const sf::Vector2<double>& vel) { velocity = vel; }
 
 // Move the planet based on its velocity and the delta time
 void Planet::move(double deltaTime) {
-    position += velocity * deltaTime;  // Update position based on velocity
+    position += velocity * deltaTime; 
 }

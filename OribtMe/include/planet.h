@@ -21,7 +21,7 @@ public:
     void move(double deltaTime);
 
 private:
-    double radius;
+    float radius;
     sf::Color color;
     sf::Vector2<double> position;
     sf::Vector2<double> velocity;

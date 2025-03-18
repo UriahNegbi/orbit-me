@@ -18,7 +18,7 @@ public:
 
     // Compute gravitational force between all planets and update their velocities and positions
     void computeGravity();
-
+    double computeSlingshotEffect(const sf::Vector2<double>& relativeVelocity, const Planet& planetB);
     // Getters
     double getTimeStep();
     double getTimeStepTmp();

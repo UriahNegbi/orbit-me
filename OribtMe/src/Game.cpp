@@ -3,15 +3,17 @@
 
 void Game::initVariables()
 {
+    //vars
     window = nullptr;
     cameraMode = Free;
+    simulator.planets = &objects;
+    // game logic
     currentPlanetIndex = 0;
-    speed = 5.f;
+    speed = 5;
     orbitTrail = false;
     lockKeyPressed = false;
     leftKeyPressed = false;
     rightKeyPressed = false;
-    simulator.planets = &objects;
 }
 
 void Game::initRenderShapes()
@@ -30,7 +32,7 @@ void Game::initWindow()
     videoMode.height = 600;
     videoMode.width = 1000;
     window = new sf::RenderWindow(videoMode, "Gravity Simulator");
-    window->setVerticalSyncEnabled(true);
+    window->setFramerateLimit(60);
 }
 
 void Game::initView()
@@ -43,6 +45,7 @@ Game::Game()
 {
     initVariables();
     initWindow();
+    initUi();
     initRenderShapes();
     initView();
 }
@@ -60,11 +63,13 @@ const bool Game::running() const
 void Game::pollEvents()
 {
     while (window->pollEvent(ev)) {
+        ImGui::SFML::ProcessEvent(ev);
         switch (ev.type)
         {
         case sf::Event::Closed:
             window->close();
             break;
+
         case sf::Event::KeyPressed:
             if (ev.key.code == sf::Keyboard::Escape) {
                 window->close();
@@ -115,17 +120,18 @@ void Game::updatePlanet()
     for (size_t i = 0; i < objects.size(); ++i) {
         renderObjects[i].setPosition(static_cast<sf::Vector2f>(objects[i].getPosition()));
 
-        if (orbitTrail) {
             orbitTrails[i].append(sf::Vertex(sf::Vector2f(objects[i].getPosition().x, objects[i].getPosition().y), objects[i].getColor()));
-        }
+
     }
 }
-
 
 void Game::updateCamera()
 {
     if (cameraMode == Lock) {
-        view.setCenter(renderObjects.at(currentPlanetIndex).getPosition());
+
+        sf::Vector2f planetPos = renderObjects.at(currentPlanetIndex).getPosition();
+
+        view.setCenter(planetPos.x, planetPos.y);
     }
 }
 
@@ -141,8 +147,8 @@ void Game::addPlanet(Planet planet)
     renderObjects.emplace_back(std::move(shape));
 
     // Initialize the orbit trail for the new planet
-        sf::VertexArray orbitTrail(sf::LinesStrip);
-        orbitTrails.push_back(orbitTrail);
+    sf::VertexArray orbitTrail(sf::LinesStrip);
+    orbitTrails.push_back(orbitTrail);
 }
 
 void Game::updateControls()
@@ -163,10 +169,10 @@ void Game::updateControls()
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        view.zoom(0.9f); // Zoom in
+        view.zoom(0.7f); // Zoom in
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        view.zoom(1.1f); // Zoom out
+        view.zoom(2.f); // Zoom out
     }
 }
 
@@ -175,32 +181,43 @@ void Game::update()
     pollEvents();
     simulator.computeGravity();
     updateControls();
-    updateCamera();
     updatePlanet();
+    updateCamera();
+    updateUi();
 }
 
 void Game::renderPlanets()
 {
-    for (const sf::CircleShape& renderObject : renderObjects) {
-        window->draw(renderObject);
+    if (orbitTrail) {
+        for (const auto& orbitTrail : orbitTrails) {
+            window->draw(orbitTrail);
+        }
     }
+        for (const sf::CircleShape& renderObject : renderObjects) {
+            window->draw(renderObject);
+        }
 
-    for (const auto& orbitTrail : orbitTrails) {
-        window->draw(orbitTrail);
-    }
 }
 
-void Game::render()
-{
+void Game::render() {
     window->clear();
     window->setView(view);
+
     renderPlanets();
+    renderUi();
+
     window->display();
 }
+
 
 void Game::setSpeed(float speed)
 {
     this->speed = speed;
+}
+
+void Game::setOrbitMePath(std::string pathToOrbitMe)
+{
+    orbitMePath = pathToOrbitMe;
 }
 
 float Game::getSpeed() const

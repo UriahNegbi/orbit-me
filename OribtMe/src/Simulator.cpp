@@ -1,4 +1,3 @@
-// Simulator.cpp
 #include "Simulator.h"
 #include <cmath>
 #include <vector>
@@ -8,10 +7,22 @@ Simulator::Simulator(std::vector<Planet>& planets, double gravitationalConstant,
     : planets(&planets), G(gravitationalConstant), timeStep(deltaTime) {
 }
 
+double Simulator::computeSlingshotEffect(const sf::Vector2<double>& relativeVelocity, const Planet& planetB) {
+    // Determine the direction of relative velocity at the closest approach
+    sf::Vector2<double> relativeVelocityDirection = relativeVelocity;
+    double relativeSpeed = std::sqrt(relativeVelocity.x * relativeVelocity.x + relativeVelocity.y * relativeVelocity.y);
+
+    // The velocity change is proportional to the relative speed and the mass of the assisting planet (planetB)
+    double slingshotEffect = relativeSpeed * (planetB.getMass() / (planetB.getMass() + 1));  // Simplified for demonstration
+
+    // Return the percentage of velocity change (as a factor of the relative velocity)
+    return slingshotEffect;  // This will be a small factor
+}
+
+
 // Compute gravitational force between all planets and update their velocities and positions
 void Simulator::computeGravity() {
     auto& planets_ref = *planets;
-
     size_t planetCount = planets_ref.size();
     std::vector<sf::Vector2<double>> forces(planetCount, sf::Vector2<double>(0.0, 0.0));
 
@@ -23,14 +34,13 @@ void Simulator::computeGravity() {
 
             // Calculate the direction vector from planet A to planet B
             sf::Vector2<double> direction = planetB.getPosition() - planetA.getPosition();
-            double distance = std::sqrt(direction.x * direction.x + direction.y * direction.y); // Pythagoras theorem
+            double distance = std::sqrt(direction.x * direction.x + direction.y * direction.y); // Pythagorean theorem
 
             // Avoid division by zero
             if (distance == 0) continue;
 
             // Normalize the direction vector
-            direction.x /= distance;
-            direction.y /= distance;
+            direction /= distance;
 
             // Gravitational force magnitude: F = G * (m1 * m2) / r^2
             double forceMagnitude = G * (planetA.getMass() * planetB.getMass()) / (distance * distance);
@@ -53,9 +63,10 @@ void Simulator::computeGravity() {
 
         // Update velocity and move
         planet.setVelocity(planet.getVelocity() + velocityChange);
-        planet.move(timeStep);
+        planet.move(timeStep);  // Move deltaTime
     }
 }
+
 
 double Simulator::getTimeStep() {
     return this->timeStep;
