@@ -10,3 +10,11 @@ space-stop/play the simulation
 G-lock mode/free mode
 w,s,a,d- move around in free mode
 left,right- follow planets/stars on lock mode
+
+
+https://github.com/user-attachments/assets/dd89eeec-7a86-42a8-9181-0e84b63f8afd
+
+
+
+https://github.com/user-attachments/assets/a3c1b391-421c-4454-9657-51feb0222901
+
